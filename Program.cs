@@ -6,15 +6,12 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using HealthCareABApi.Repositories;
 using HealthCareABApi.Repositories.Implementations;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure MongoDB settings
-builder.Services.Configure<MongoDBSettings>(
-    builder.Configuration.GetSection("MongoDBSettings"));
-
-// Register MongoDB context
-builder.Services.AddSingleton<IMongoDbContext, MongoDbContext>();
+builder.Services.AddDbContext<AppDbContext>(options =>
+	options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Register repositories
 builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();

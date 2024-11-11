@@ -1,42 +1,56 @@
 ﻿using System;
 using HealthCareABApi.Models;
+using HealthCareABApi.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 
 namespace HealthCareABApi.Repositories.Implementations
 {
-    public class AppointmentRepository : IAppointmentRepository
-    {
-        private readonly IMongoCollection<Appointment> _collection;
+	public class AppointmentRepository : IAppointmentRepository
+	{
+		private readonly AppDbContext _context;
 
-        public AppointmentRepository(IMongoDbContext context)
-        {
-            _collection = context.Appointments;
-        }
+		public AppointmentRepository(AppDbContext context)
+		{
+			_context = context;
+		}
 
-        public async Task<IEnumerable<Appointment>> GetAllAsync()
-        {
-            return await _collection.Find(_ => true).ToListAsync();
-        }
+		public async Task<IEnumerable<Appointment>> GetAllAsync()
+		{
+			return await _context.Appointments
+			   .Include(a => a.PatientId)
+			   .Include(a => a.CaregiverId)
+			   .ToListAsync();
+		}
 
-        public async Task<Appointment> GetByIdAsync(string id)
-        {
-            return await _collection.Find(a => a.Id == id).FirstOrDefaultAsync();
-        }
+		public async Task<Appointment> GetByIdAsync(int id)
+		{
+			return await _context.Appointments
+	 .Include(a => a.PatientId)
+	 .Include(a => a.CaregiverId)
+	 .FirstOrDefaultAsync(a => a.Id == id);
+		}
 
-        public async Task CreateAsync(Appointment appointment)
-        {
-            await _collection.InsertOneAsync(appointment);
-        }
+		public async Task CreateAsync(Appointment appointment)
+		{
+			await _context.Appointments.AddAsync(appointment);
+			await _context.SaveChangesAsync();
+		}
 
-        public async Task UpdateAsync(string id, Appointment appointment)
-        {
-            await _collection.ReplaceOneAsync(a => a.Id == id, appointment);
-        }
+		public async Task UpdateAsync(int id, Appointment appointment)
+		{
+			_context.Appointments.Update(appointment);
+			await _context.SaveChangesAsync();
+		}
 
-        public async Task DeleteAsync(string id)
-        {
-            await _collection.DeleteOneAsync(a => a.Id == id);
-        }
-    }
+		public async Task DeleteAsync(int id)
+		{
+			var appointment = await _context.Appointments.FindAsync(id);
+			if (appointment != null)
+			{
+				_context.Appointments.Remove(appointment);
+				await _context.SaveChangesAsync();
+			}
+		}
+	}
 }
-

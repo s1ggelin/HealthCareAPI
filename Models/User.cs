@@ -1,15 +1,9 @@
-﻿using System;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-
-namespace HealthCareABApi.Models
+﻿namespace HealthCareABApi.Models
 {
-    public class User
+	public class User
     {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        // MongoDB ObjectId stored as a string
-        public string Id { get; set; } 
+
+        public int Id { get; set; } 
 
         public string Username { get; set; }
         public string PasswordHash { get; set; }
