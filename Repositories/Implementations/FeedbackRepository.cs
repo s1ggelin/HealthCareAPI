@@ -1,12 +1,9 @@
-﻿using System;
-using HealthCareABApi.Models;
-using HealthCareABApi.Repositories.Interfaces;
+﻿using HealthCareABApi.Models;
 using Microsoft.EntityFrameworkCore;
-using MongoDB.Driver;
 
 namespace HealthCareABApi.Repositories.Implementations
 {
-    public class FeedbackRepository : IFeedbackRepository
+	public class FeedbackRepository : IFeedbackRepository
     {
 		private readonly AppDbContext _context;
 

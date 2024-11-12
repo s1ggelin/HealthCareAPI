@@ -8,5 +8,8 @@ namespace HealthCareABApi.Repositories.Interfaces
 		DbSet<Appointment> Appointments { get; set; }
 		DbSet<Availability> Availabilities { get; set; }
 		DbSet<Feedback> Feedbacks { get; set; }
+		DbSet<User> Users { get; set; }
+
+		Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 	}
 }

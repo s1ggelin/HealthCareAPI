@@ -1,8 +1,5 @@
-﻿using System;
-using HealthCareABApi.Models;
-using HealthCareABApi.Repositories.Interfaces;
+﻿using HealthCareABApi.Models;
 using Microsoft.EntityFrameworkCore;
-using MongoDB.Driver;
 
 namespace HealthCareABApi.Repositories.Implementations
 {

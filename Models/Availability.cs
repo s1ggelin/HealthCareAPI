@@ -7,4 +7,3 @@
         public List<DateTime> AvailableSlots { get; set; }
     }
 }
-
