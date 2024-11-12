@@ -1,42 +1,46 @@
-﻿using System;
-using HealthCareABApi.Models;
-using MongoDB.Driver;
+﻿using HealthCareABApi.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace HealthCareABApi.Repositories.Implementations
 {
-    public class AvailabilityRepository : IAvailabilityRepository
+	public class AvailabilityRepository : IAvailabilityRepository
     {
-        private readonly IMongoCollection<Availability> _collection;
+		private readonly AppDbContext _context;
 
-        public AvailabilityRepository(IMongoDbContext context)
-        {
-            _collection = context.Availabilities;
-        }
+		public AvailabilityRepository(AppDbContext context)
+		{
+			_context = context;
+		}
 
         public async Task<IEnumerable<Availability>> GetAllAsync()
         {
-            return await _collection.Find(_ => true).ToListAsync();
+            return await _context.Availabilities.ToListAsync();
         }
 
-        public async Task<Availability> GetByIdAsync(string id)
+        public async Task<Availability> GetByIdAsync(int id)
         {
-            return await _collection.Find(a => a.Id == id).FirstOrDefaultAsync();
+            return await _context.Availabilities.FindAsync(id);
         }
-
         public async Task CreateAsync(Availability availability)
         {
-            await _collection.InsertOneAsync(availability);
+            await _context.Availabilities.AddAsync(availability);
         }
 
-        public async Task UpdateAsync(string id, Availability availability)
+        public async Task UpdateAsync(int id, Availability availability)
         {
-            await _collection.ReplaceOneAsync(a => a.Id == id, availability);
+            _context.Availabilities.Update(availability);
+            await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(string id)
+        public async Task DeleteAsync(int id)
         {
-            await _collection.DeleteOneAsync(a => a.Id == id);
-        }
+			var availability = await _context.Availabilities.FindAsync(id);
+			if (availability != null)
+			{
+				_context.Availabilities.Remove(availability);
+				await _context.SaveChangesAsync();
+			}
+		}
     }
 }
 

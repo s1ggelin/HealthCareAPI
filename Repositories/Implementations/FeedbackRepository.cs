@@ -1,42 +1,47 @@
-﻿using System;
-using HealthCareABApi.Models;
-using MongoDB.Driver;
+﻿using HealthCareABApi.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace HealthCareABApi.Repositories.Implementations
 {
-    public class FeedbackRepository : IFeedbackRepository
+	public class FeedbackRepository : IFeedbackRepository
     {
-        private readonly IMongoCollection<Feedback> _collection;
+		private readonly AppDbContext _context;
 
-        public FeedbackRepository(IMongoDbContext context)
-        {
-            _collection = context.Feedbacks;
-        }
+		public FeedbackRepository(AppDbContext context)
+		{
+			_context = context;
+		}
 
-        public async Task<IEnumerable<Feedback>> GetAllAsync()
+		public async Task<IEnumerable<Feedback>> GetAllAsync()
         {
-            return await _collection.Find(_ => true).ToListAsync();
-        }
+			return await _context.Feedbacks.ToListAsync();
+		}
 
-        public async Task<Feedback> GetByIdAsync(string id)
+        public async Task<Feedback> GetByIdAsync(int id)
         {
-            return await _collection.Find(f => f.Id == id).FirstOrDefaultAsync();
-        }
+			return await _context.Feedbacks.FindAsync(id);
+		}
 
         public async Task CreateAsync(Feedback feedback)
         {
-            await _collection.InsertOneAsync(feedback);
-        }
+			await _context.Feedbacks.AddAsync(feedback);
+		}
 
-        public async Task UpdateAsync(string id, Feedback feedback)
+        public async Task UpdateAsync(int id, Feedback feedback)
         {
-            await _collection.ReplaceOneAsync(f => f.Id == id, feedback);
-        }
+			_context.Feedbacks.Update(feedback);
+			await _context.SaveChangesAsync();
+		}
 
-        public async Task DeleteAsync(string id)
+        public async Task DeleteAsync(int id)
         {
-            await _collection.DeleteOneAsync(f => f.Id == id);
-        }
+			var feedback = await _context.Feedbacks.FindAsync(id);
+			if (feedback != null)
+			{
+				_context.Feedbacks.Remove(feedback);
+				await _context.SaveChangesAsync();
+			}
+		}
     }
 }
 
