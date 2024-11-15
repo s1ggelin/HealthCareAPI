@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -8,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HealthCareABApi.Migrations
 {
     /// <inheritdoc />
-    public partial class DatabaseInitiate : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -36,7 +35,7 @@ namespace HealthCareABApi.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     CaregiverId = table.Column<int>(type: "integer", nullable: false),
-                    AvailableSlots = table.Column<List<DateTime>>(type: "timestamp with time zone[]", nullable: false)
+                    AvailableSlots = table.Column<string>(type: "jsonb", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -66,7 +65,7 @@ namespace HealthCareABApi.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     Username = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     PasswordHash = table.Column<string>(type: "text", nullable: false),
-                    Roles = table.Column<List<string>>(type: "jsonb", nullable: false)
+                    Roles = table.Column<string>(type: "jsonb", nullable: false)
                 },
                 constraints: table =>
                 {
