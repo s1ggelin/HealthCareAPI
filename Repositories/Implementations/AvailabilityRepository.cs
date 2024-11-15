@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using HealthCareABApi.Models;
 using HealthCareABApi.Repositories.Implementations;
+using System.Diagnostics.Eventing.Reader;
+using System.Management.Instrumentation;
 
 namespace HealthCareABApi.Repositories
 {
@@ -53,6 +55,12 @@ namespace HealthCareABApi.Repositories
                 _context.Availabilities.Remove(availability);
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public async Task UpdateAsync(int id, Availability availability)
+        {
+            _context.Availabilities.Update(availability);
+            await _context.SaveChangesAsync();
         }
     }
 }
