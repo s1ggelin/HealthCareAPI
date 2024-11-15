@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using HealthCareABApi.Models;
 using HealthCareABApi.Repositories.Implementations;
 using System.Diagnostics.Eventing.Reader;
-using System.Management.Instrumentation;
 
 namespace HealthCareABApi.Repositories
 {
