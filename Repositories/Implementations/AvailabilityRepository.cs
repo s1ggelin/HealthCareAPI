@@ -1,46 +1,58 @@
-﻿using HealthCareABApi.Models;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using HealthCareABApi.Models;
+using HealthCareABApi.Repositories.Implementations;
 
-namespace HealthCareABApi.Repositories.Implementations
+namespace HealthCareABApi.Repositories
 {
-	public class AvailabilityRepository : IAvailabilityRepository
+    public class AvailabilityRepository : IAvailabilityRepository
     {
-		private readonly AppDbContext _context;
+        private readonly AppDbContext _context;
 
-		public AvailabilityRepository(AppDbContext context)
-		{
-			_context = context;
-		}
+        public AvailabilityRepository(AppDbContext context)
+        {
+            _context = context;
+        }
 
+        // Get all availabilities
         public async Task<IEnumerable<Availability>> GetAllAsync()
         {
             return await _context.Availabilities.ToListAsync();
         }
 
+        // Get availability by its Id
         public async Task<Availability> GetByIdAsync(int id)
         {
-            return await _context.Availabilities.FindAsync(id);
-        }
-        public async Task CreateAsync(Availability availability)
-        {
-            await _context.Availabilities.AddAsync(availability);
+            return await _context.Availabilities
+                .FirstOrDefaultAsync(a => a.Id == id);
         }
 
-        public async Task UpdateAsync(int id, Availability availability)
+        // Get all availabilities for a specific caregiver
+        public async Task<IEnumerable<Availability>> GetAvailabilitiesAsync(int caregiverId)
         {
-            _context.Availabilities.Update(availability);
+            return await _context.Availabilities
+                .Where(a => a.CaregiverId == caregiverId)
+                .ToListAsync();
+        }
+
+        // Add a new availability
+        public async Task AddAvailabilityAsync(Availability availability)
+        {
+            await _context.Availabilities.AddAsync(availability);
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int id)
+        // Delete an availability by its Id
+        public async Task DeleteAvailabilityAsync(int id)
         {
-			var availability = await _context.Availabilities.FindAsync(id);
-			if (availability != null)
-			{
-				_context.Availabilities.Remove(availability);
-				await _context.SaveChangesAsync();
-			}
-		}
+            var availability = await _context.Availabilities.FindAsync(id);
+            if (availability != null)
+            {
+                _context.Availabilities.Remove(availability);
+                await _context.SaveChangesAsync();
+            }
+        }
     }
 }
-

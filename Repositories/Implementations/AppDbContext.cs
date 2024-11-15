@@ -26,7 +26,17 @@ namespace HealthCareABApi.Repositories.Implementations
 			.Property(e => e.Roles)
 			.HasConversion(rolesConverter)
 			.HasColumnType("jsonb");
-		}
+
+            var availableSlotConverter = new ValueConverter<List<AvailableSlot>, string>(
+    v => JsonSerializer.Serialize(v, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }),
+    v => JsonSerializer.Deserialize<List<AvailableSlot>>(v, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }) ?? new List<AvailableSlot>()
+);
+
+            modelBuilder.Entity<Availability>()
+                .Property(a => a.AvailableSlots)
+                .HasConversion(availableSlotConverter)
+                .HasColumnType("jsonb");
+        }
 
 		public DbSet<User> Users { get; set; }
 		public DbSet<Appointment> Appointments { get; set; }
