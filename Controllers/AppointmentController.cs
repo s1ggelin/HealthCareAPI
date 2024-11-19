@@ -2,6 +2,7 @@
 using HealthCareABApi.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
 namespace HealthCareABApi.Controllers
 {
     [Route("api/[controller]")]
@@ -33,6 +34,23 @@ namespace HealthCareABApi.Controllers
         public async Task<IActionResult> GetAllAppointments()
         {
             var appointments = await _appointmentRepository.GetAllAsync();
+            return Ok(appointments);
+        }
+        [HttpGet("user/{patientId}")]
+        public async Task<IActionResult> GetAppointmentsByPatientId(int patientId)
+        {
+            var appointments = await _appointmentRepository.GetByPatientIdAsync(patientId);
+            if (appointments == null || !appointments.Any())
+                return NotFound($"No appointments found for patient with ID {patientId}.");
+            return Ok(appointments);
+        }
+
+        [HttpGet("caregiver/{caregiverId}")]
+        public async Task<IActionResult> GetAppointmentsByCaregiverId(int caregiverId)
+        {
+            var appointments = await _appointmentRepository.GetByCaregiverIdAsync(caregiverId);
+            if (appointments == null || !appointments.Any())
+                return NotFound($"No appointments found for caregiver with ID {caregiverId}.");
             return Ok(appointments);
         }
         [HttpPut("{id}")]
