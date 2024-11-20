@@ -1,5 +1,6 @@
 ﻿using HealthCareABApi.Models;
 using HealthCareABApi.Repositories;
+using HealthCareABApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,37 +10,52 @@ namespace HealthCareABApi.Controllers
     [ApiController]
     public class AppointmentsController : ControllerBase
     {
-        private readonly IAppointmentRepository _appointmentRepository;
-        public AppointmentsController(IAppointmentRepository appointmentRepository)
+        private readonly AppointmentService _service;
+        public AppointmentsController(AppointmentService service)
         {
-            _appointmentRepository = appointmentRepository;
+            _service = service;
         }
         [HttpPost]
         public async Task<IActionResult> CreateAppointment([FromBody] Appointment appointment)
         {
             if (appointment == null)
                 return BadRequest("Invalid appointment data.");
-            await _appointmentRepository.CreateAsync(appointment);
-            return Ok("Appointment created successfully.");
+
+            try
+            {
+                await _service.CreateAsync(appointment);
+                return Ok("Appointment created succesfully.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAppointment(int id)
         {
-            var appointment = await _appointmentRepository.GetByIdAsync(id);
-            if (appointment == null)
-                return NotFound($"Appointment with ID {id} not found.");
+            try
+            {
+            var appointment = await _service.GetByIdAsync(id);
             return Ok(appointment);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new {message = ex.Message });
+            }
+  
         }
         [HttpGet]
         public async Task<IActionResult> GetAllAppointments()
         {
-            var appointments = await _appointmentRepository.GetAllAsync();
+            var appointments = await _service.GetAllAsync();
             return Ok(appointments);
         }
+
         [HttpGet("patient/{patientId}")]
         public async Task<IActionResult> GetAppointmentsByPatientId(int patientId)
         {
-            var appointments = await _appointmentRepository.GetByPatientIdAsync(patientId);
+            var appointments = await _service.GetByPatientIdAsync(patientId);
             if (appointments == null || !appointments.Any())
                 return NotFound($"No appointments found for patient with ID {patientId}.");
             return Ok(appointments);
@@ -48,7 +64,7 @@ namespace HealthCareABApi.Controllers
         [HttpGet("caregiver/{caregiverId}")]
         public async Task<IActionResult> GetAppointmentsByCaregiverId(int caregiverId)
         {
-            var appointments = await _appointmentRepository.GetByCaregiverIdAsync(caregiverId);
+            var appointments = await _service.GetByCaregiverIdAsync(caregiverId);
             if (appointments == null || !appointments.Any())
                 return NotFound($"No appointments found for caregiver with ID {caregiverId}.");
             return Ok(appointments);
@@ -58,20 +74,32 @@ namespace HealthCareABApi.Controllers
         {
             if (appointment == null || id != appointment.Id)
                 return BadRequest("Invalid appointment data or ID mismatch.");
-            var existingAppointment = await _appointmentRepository.GetByIdAsync(id);
-            if (existingAppointment == null)
-                return NotFound($"Appointment with ID {id} not found.");
-            await _appointmentRepository.UpdateAsync(id, appointment);
-            return Ok("Appointment updated successfully.");
+            try
+            {
+                await _service.UpdateAsync(id, appointment);
+                return Ok("Appointment updated successfully.");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAppointment(int id)
         {
-            var appointment = await _appointmentRepository.GetByIdAsync(id);
-            if (appointment == null)
-                return NotFound($"Appointment with ID {id} not found.");
-            await _appointmentRepository.DeleteAsync(id);
-            return Ok("Appointment deleted successfully.");
+            try
+            {
+                await _service.DeleteAsync(id);
+                return Ok("Appointment deleted successfully.");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            } 
         }
     }
 }
