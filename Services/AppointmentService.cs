@@ -6,7 +6,7 @@ namespace HealthCareABApi.Services
     public class AppointmentService
     {
         private readonly IAppointmentRepository _repository;
-        
+
         public AppointmentService(IAppointmentRepository repository)
         {
             _repository = repository;
