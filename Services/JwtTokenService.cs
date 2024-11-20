@@ -22,7 +22,6 @@ namespace HealthCareABApi.Services
         {
             // Retrieve the JWT secret key, issuer, audience, and token expiry duration from configuration.
             _secret = configuration["JwtSettings:Secret"];
-            _secret = configuration["JwtSettings:Secret"];
             _issuer = configuration["JwtSettings:Issuer"];
             _audience = configuration["JwtSettings:Audience"];
             _expiryInMinutes = int.Parse(configuration["JwtSettings:ExpiryInMinutes"]);
@@ -38,7 +37,10 @@ namespace HealthCareABApi.Services
             // Add a claim with the user's username.
             new Claim(ClaimTypes.Name, user.Username),
             // Add a unique identifier (JTI) claim for this token instance.
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+
+            // Add the user's ID as a custom claim.
+            new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()) // 'sub' (subject) is commonly used for user IDs in JWTs.
         };
 
             // Add claims for each of the user's roles.
