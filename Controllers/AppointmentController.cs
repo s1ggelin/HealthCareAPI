@@ -36,7 +36,7 @@ namespace HealthCareABApi.Controllers
             var appointments = await _appointmentRepository.GetAllAsync();
             return Ok(appointments);
         }
-        [HttpGet("user/{patientId}")]
+        [HttpGet("patient/{patientId}")]
         public async Task<IActionResult> GetAppointmentsByPatientId(int patientId)
         {
             var appointments = await _appointmentRepository.GetByPatientIdAsync(patientId);
