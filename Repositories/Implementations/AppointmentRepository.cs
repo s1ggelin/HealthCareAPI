@@ -15,16 +15,12 @@ namespace HealthCareABApi.Repositories.Implementations
 		public async Task<IEnumerable<Appointment>> GetAllAsync()
 		{
 			return await _context.Appointments
-			   .Include(a => a.PatientId)
-			   .Include(a => a.CaregiverId)
 			   .ToListAsync();
 		}
 
 		public async Task<Appointment> GetByIdAsync(int id)
 		{
 			return await _context.Appointments
-				.Include(a => a.PatientId)
-				.Include(a => a.CaregiverId)
 				.FirstOrDefaultAsync(a => a.Id == id);
 		}
 
