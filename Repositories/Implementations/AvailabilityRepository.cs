@@ -60,5 +60,12 @@ namespace HealthCareABApi.Repositories
             _context.Availabilities.Update(availability);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<Availability> GetByCaregiverIdAndDateAsync(int caregiverId, DateTime date)
+        {
+            return await _context.Availabilities
+                .Where(a => a.CaregiverId == caregiverId && a.AvailableSlots.Any(slot => slot.Date == date))
+                .FirstOrDefaultAsync();
+        }
     }
 }
