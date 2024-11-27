@@ -54,7 +54,7 @@ namespace HealthCareABApi.Controllers
         }
 
         // Endpoint to retrieve all appointments
-        [HttpGet]
+        [HttpGet("all")]
         public async Task<IActionResult> GetAllAppointments()
         {
             // Calling the service layer to fetch all appointments
