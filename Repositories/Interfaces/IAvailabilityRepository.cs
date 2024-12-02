@@ -11,6 +11,7 @@ namespace HealthCareABApi.Repositories
         Task<IEnumerable<Availability>> GetAvailabilitiesAsync(int caregiverId); 
         Task AddAvailabilityAsync(Availability availability);            
         Task DeleteAvailabilityAsync(int id);                            
-        Task UpdateAsync(int id, Availability availability);             
+        Task UpdateAsync(int id, Availability availability);
+        Task<Availability> GetByCaregiverIdAndDateAsync(int caregiverId, DateTime date);
     }
 }
