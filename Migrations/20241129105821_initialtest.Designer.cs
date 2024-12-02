@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HealthCareABApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241122092241_dbtest")]
-    partial class dbtest
+    [Migration("20241129105821_initialtest")]
+    partial class initialtest
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -67,6 +67,8 @@ namespace HealthCareABApi.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CaregiverId");
+
                     b.ToTable("Availabilities");
                 });
 
@@ -117,6 +119,22 @@ namespace HealthCareABApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("HealthCareABApi.Models.Availability", b =>
+                {
+                    b.HasOne("HealthCareABApi.Models.User", "Caregiver")
+                        .WithMany("Availabilities")
+                        .HasForeignKey("CaregiverId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Caregiver");
+                });
+
+            modelBuilder.Entity("HealthCareABApi.Models.User", b =>
+                {
+                    b.Navigation("Availabilities");
                 });
 #pragma warning restore 612, 618
         }

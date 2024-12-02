@@ -53,7 +53,6 @@ namespace HealthCareABApi.Controllers
             if (availability == null)
                 return BadRequest("Invalid availability data.");
 
-            // Ensure dates are treated as UTC before saving
             foreach (var slot in availability.AvailableSlots)
             {
                 slot.Date = DateTime.SpecifyKind(slot.Date, DateTimeKind.Utc);
@@ -98,11 +97,9 @@ namespace HealthCareABApi.Controllers
                 return NotFound($"Availability with ID {id} not found.");
             }
 
-            // Remove the specific slot
             var originalCount = availability.AvailableSlots.Count;
             availability.AvailableSlots.RemoveAll(slot => slot.Date == slotDate);
 
-            // If no slots remain, delete the entire availability entry
             if (availability.AvailableSlots.Count == 0)
             {
                 await _availabilityRepository.DeleteAvailabilityAsync(id);

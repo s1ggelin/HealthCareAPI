@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HealthCareABApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241122091908_firsttest")]
-    partial class firsttest
+    [Migration("20241202011416_newinit")]
+    partial class newinit
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
