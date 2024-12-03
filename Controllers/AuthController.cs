@@ -89,10 +89,13 @@ namespace HealthCareABApi.Controllers
                 {
                     message = "Login successful",
                     username = user.Username,
-                    roles = user.Roles
+                    roles = user.Roles,
+                    userId = user.Id
                 };
 
+                Console.WriteLine(authResponse);
                 return Ok(authResponse);
+
             }
             catch (Exception)
             {

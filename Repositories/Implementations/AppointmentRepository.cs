@@ -15,20 +15,27 @@ namespace HealthCareABApi.Repositories.Implementations
 		public async Task<IEnumerable<Appointment>> GetAllAsync()
 		{
 			return await _context.Appointments
-			   .Include(a => a.PatientId)
-			   .Include(a => a.CaregiverId)
 			   .ToListAsync();
 		}
 
 		public async Task<Appointment> GetByIdAsync(int id)
 		{
 			return await _context.Appointments
-	 .Include(a => a.PatientId)
-	 .Include(a => a.CaregiverId)
-	 .FirstOrDefaultAsync(a => a.Id == id);
+				.FirstOrDefaultAsync(a => a.Id == id);
 		}
 
-		public async Task CreateAsync(Appointment appointment)
+        public async Task<IEnumerable<Appointment>> GetByPatientIdAsync(int patientId)
+        {
+            return await _context.Appointments.Where(a => a.PatientId == patientId).ToListAsync();
+        }
+
+        public async Task<IEnumerable<Appointment>> GetByCaregiverIdAsync(int caregiverId)
+        {
+            return await _context.Appointments.Where(a => a.CaregiverId == caregiverId).ToListAsync();
+        }
+
+
+        public async Task CreateAsync(Appointment appointment)
 		{
 			await _context.Appointments.AddAsync(appointment);
 			await _context.SaveChangesAsync();
@@ -49,5 +56,6 @@ namespace HealthCareABApi.Repositories.Implementations
 				await _context.SaveChangesAsync();
 			}
 		}
-	}
+
+    }
 }

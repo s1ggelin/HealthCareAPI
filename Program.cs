@@ -25,6 +25,8 @@ builder.Services.AddScoped<IAppDbContext, AppDbContext>();
 // Register custom services
 builder.Services.AddScoped<UserService>();
 builder.Services.AddSingleton<JwtTokenService>();
+builder.Services.AddScoped<AppointmentService>();
+
 
 // Add controllers
 builder.Services.AddControllers();
